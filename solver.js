@@ -4,6 +4,67 @@ class CircuitSolver {
     constructor() {
         this.nodeVoltages = new Map(); // Tensões nos nós
         this.componentCurrents = new Map(); // Correntes nos componentes
+        this.nodeMap = new Map(); // Mapeia nós físicos para nós elétricos unificados
+    }
+
+    /**
+     * Union-Find para unir nós conectados por fios
+     */
+    buildNodeMap(circuit) {
+        this.nodeMap.clear();
+        const parent = new Map();
+
+        // Função para encontrar a raiz (com compressão de caminho)
+        const find = (node) => {
+            if (!parent.has(node)) {
+                parent.set(node, node);
+                return node;
+            }
+            if (parent.get(node) !== node) {
+                parent.set(node, find(parent.get(node)));
+            }
+            return parent.get(node);
+        };
+
+        // Função para unir dois nós
+        const union = (node1, node2) => {
+            const root1 = find(node1);
+            const root2 = find(node2);
+            if (root1 !== root2) {
+                parent.set(root2, root1);
+            }
+        };
+
+        // Identifica todos os nós físicos
+        const allNodes = new Set();
+        [...circuit.resistors, ...circuit.voltageSources, ...circuit.grounds, ...circuit.wires].forEach(comp => {
+            const node1 = `${comp.x},${comp.y}`;
+            const node2 = `${comp.x2},${comp.y2}`;
+            allNodes.add(node1);
+            if (comp.x2 !== undefined) allNodes.add(node2);
+        });
+
+        // Inicializa todos os nós
+        allNodes.forEach(node => find(node));
+
+        // Une nós conectados por fios (fios são conexões de resistência zero)
+        circuit.wires.forEach(wire => {
+            const node1 = `${wire.x},${wire.y}`;
+            const node2 = `${wire.x2},${wire.y2}`;
+            union(node1, node2);
+        });
+
+        // Cria mapa de nós físicos para nós elétricos
+        allNodes.forEach(node => {
+            this.nodeMap.set(node, find(node));
+        });
+    }
+
+    /**
+     * Retorna o nó elétrico unificado para um nó físico
+     */
+    getElectricalNode(physicalNode) {
+        return this.nodeMap.get(physicalNode) || physicalNode;
     }
 
     /**
@@ -67,7 +128,10 @@ class CircuitSolver {
         this.nodeVoltages.clear();
         this.componentCurrents.clear();
 
-        // Identifica todos os nós únicos
+        // Constrói mapa de nós conectados por fios
+        this.buildNodeMap(circuit);
+
+        // Identifica todos os nós únicos (elétricos)
         const nodes = this.identifyNodes(circuit);
 
         // Encontra o nó ground (referência)
@@ -173,13 +237,13 @@ class CircuitSolver {
     }
 
     /**
-     * Identifica todos os nós únicos no circuito
+     * Identifica todos os nós únicos no circuito (nós elétricos unificados)
      */
     identifyNodes(circuit) {
         const nodes = new Set();
 
-        // Adiciona nós de todos os componentes
-        [...circuit.resistors, ...circuit.voltageSources, ...circuit.grounds].forEach(comp => {
+        // Adiciona nós de todos os componentes (usando nós elétricos unificados)
+        [...circuit.resistors, ...circuit.voltageSources, ...circuit.grounds, ...circuit.wires].forEach(comp => {
             const [node1, node2] = this.getComponentNodes(comp);
             if (node1) nodes.add(node1);
             if (node2) nodes.add(node2);
@@ -194,20 +258,26 @@ class CircuitSolver {
     findGroundNode(circuit, nodes) {
         // Ground é definido pelos componentes de ground
         for (const ground of circuit.grounds) {
-            const nodeKey = `${ground.x},${ground.y}`;
-            if (nodes.has(nodeKey)) {
-                return nodeKey;
+            const physicalNode = `${ground.x},${ground.y}`;
+            const electricalNode = this.getElectricalNode(physicalNode);
+            if (nodes.has(electricalNode)) {
+                return electricalNode;
             }
         }
         return null;
     }
 
     /**
-     * Retorna os dois nós conectados por um componente
+     * Retorna os dois nós elétricos conectados por um componente
      */
     getComponentNodes(component) {
-        const node1 = `${component.x},${component.y}`;
-        const node2 = `${component.x2},${component.y2}`;
+        const physicalNode1 = `${component.x},${component.y}`;
+        const physicalNode2 = `${component.x2},${component.y2}`;
+
+        // Retorna os nós elétricos unificados
+        const node1 = this.getElectricalNode(physicalNode1);
+        const node2 = this.getElectricalNode(physicalNode2);
+
         return [node1, node2];
     }
 
@@ -259,8 +329,9 @@ class CircuitSolver {
      * Retorna a tensão em um ponto específico
      */
     getVoltageAt(x, y) {
-        const nodeKey = `${x},${y}`;
-        return this.nodeVoltages.get(nodeKey) || 0;
+        const physicalNode = `${x},${y}`;
+        const electricalNode = this.getElectricalNode(physicalNode);
+        return this.nodeVoltages.get(electricalNode) || 0;
     }
 
     /**
