@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulador de Circuitos Resistivos</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Simulador de Circuitos Resistivos</h1>
+        </div>
+
+        <div class="toolbar">
+            <div class="tool-section">
+                <h3>Componentes</h3>
+                <button id="tool-wire" class="tool-btn active" title="Fio (W)">
+                    <span class="icon">─</span> Fio
+                </button>
+                <button id="tool-resistor" class="tool-btn" title="Resistor (R)">
+                    <span class="icon">🔲</span> Resistor
+                </button>
+                <button id="tool-voltage" class="tool-btn" title="Fonte de Tensão (V)">
+                    <span class="icon">⊕</span> Fonte
+                </button>
+                <button id="tool-ground" class="tool-btn" title="Ground (G)">
+                    <span class="icon">⏚</span> Ground
+                </button>
+            </div>
+
+            <div class="tool-section">
+                <h3>Ações</h3>
+                <button id="tool-measure" class="tool-btn" title="Medir (M)">
+                    <span class="icon">📏</span> Medir
+                </button>
+                <button id="tool-delete" class="tool-btn" title="Deletar (D)">
+                    <span class="icon">🗑️</span> Deletar
+                </button>
+            </div>
+
+            <div class="tool-section">
+                <h3>Simulação</h3>
+                <button id="btn-simulate" class="action-btn simulate-btn" title="Simular (Space)">
+                    ▶ Simular
+                </button>
+                <button id="btn-clear" class="action-btn clear-btn" title="Limpar Tudo">
+                    🗑️ Limpar
+                </button>
+            </div>
+
+            <div class="tool-section properties">
+                <h3>Propriedades</h3>
+                <div id="properties-panel">
+                    <p class="help-text">Clique em um componente para editar suas propriedades</p>
+                </div>
+            </div>
+
+            <div class="tool-section info">
+                <h3>Informações</h3>
+                <div id="info-panel">
+                    <p class="help-text">
+                        <strong>Atalhos:</strong><br>
+                        W - Fio | R - Resistor<br>
+                        V - Fonte | G - Ground<br>
+                        M - Medir | D - Deletar<br>
+                        Space - Simular<br>
+                        ESC - Cancelar
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="canvas-container">
+            <canvas id="circuit-canvas"></canvas>
+            <div id="measurement-display" class="measurement-display"></div>
+        </div>
+    </div>
+
+    <script src="solver.js"></script>
+    <script src="circuit.js"></script>
+</body>
+</html>

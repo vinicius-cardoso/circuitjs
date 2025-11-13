@@ -1,0 +1,230 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.container {
+    max-width: 1600px;
+    margin: 0 auto;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 20px 30px;
+    text-align: center;
+}
+
+.header h1 {
+    font-size: 28px;
+    font-weight: 600;
+}
+
+.toolbar {
+    background: #f8f9fa;
+    padding: 20px;
+    border-bottom: 2px solid #e0e0e0;
+    display: flex;
+    gap: 30px;
+    flex-wrap: wrap;
+    align-items: flex-start;
+}
+
+.tool-section {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.tool-section h3 {
+    font-size: 14px;
+    color: #666;
+    text-transform: uppercase;
+    margin-bottom: 5px;
+    font-weight: 600;
+}
+
+.tool-btn {
+    padding: 10px 16px;
+    border: 2px solid #ddd;
+    background: white;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 130px;
+}
+
+.tool-btn:hover {
+    border-color: #667eea;
+    background: #f0f4ff;
+    transform: translateY(-2px);
+}
+
+.tool-btn.active {
+    background: #667eea;
+    color: white;
+    border-color: #667eea;
+}
+
+.tool-btn .icon {
+    font-size: 18px;
+}
+
+.action-btn {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    min-width: 130px;
+}
+
+.simulate-btn {
+    background: #10b981;
+    color: white;
+}
+
+.simulate-btn:hover {
+    background: #059669;
+    transform: translateY(-2px);
+}
+
+.simulate-btn.simulating {
+    background: #ef4444;
+}
+
+.clear-btn {
+    background: #f59e0b;
+    color: white;
+}
+
+.clear-btn:hover {
+    background: #d97706;
+    transform: translateY(-2px);
+}
+
+.properties {
+    min-width: 200px;
+}
+
+#properties-panel {
+    background: white;
+    padding: 12px;
+    border-radius: 6px;
+    border: 1px solid #ddd;
+}
+
+.property-input {
+    margin: 8px 0;
+}
+
+.property-input label {
+    display: block;
+    font-size: 12px;
+    color: #666;
+    margin-bottom: 4px;
+    font-weight: 500;
+}
+
+.property-input input {
+    width: 100%;
+    padding: 6px 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.property-input input:focus {
+    outline: none;
+    border-color: #667eea;
+}
+
+.info {
+    min-width: 200px;
+}
+
+#info-panel {
+    background: white;
+    padding: 12px;
+    border-radius: 6px;
+    border: 1px solid #ddd;
+}
+
+.help-text {
+    font-size: 12px;
+    color: #666;
+    line-height: 1.6;
+}
+
+.canvas-container {
+    position: relative;
+    flex: 1;
+    background: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    min-height: 600px;
+}
+
+#circuit-canvas {
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    cursor: crosshair;
+    background: #fafafa;
+}
+
+.measurement-display {
+    position: absolute;
+    background: rgba(0, 0, 0, 0.85);
+    color: white;
+    padding: 12px 16px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    pointer-events: none;
+    display: none;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    z-index: 1000;
+}
+
+.measurement-display.show {
+    display: block;
+}
+
+/* Responsive */
+@media (max-width: 1200px) {
+    .toolbar {
+        flex-direction: column;
+    }
+
+    .tool-section {
+        width: 100%;
+    }
+
+    .tool-btn,
+    .action-btn {
+        width: 100%;
+    }
+}
